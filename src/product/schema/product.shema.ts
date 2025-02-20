@@ -31,8 +31,8 @@ export class Product extends Document {
   @Prop()
   Color: string;
 
-  // @Prop()
-  // movementType: string;
+  @Prop({ default: [''] })
+  size: string[];
 
   // @Prop()
   // strapSize: number;

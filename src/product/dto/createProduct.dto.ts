@@ -35,6 +35,10 @@ export class CreateProductDto {
 
   // @IsNotEmpty()
   // @IsString()
+  // size: string;
+
+  // @IsNotEmpty()
+  // @IsString()
   // movementType: string;
 
   // @IsNotEmpty()
@@ -58,11 +62,4 @@ export class CreateProductDto {
   typeId: string;
 }
 
-// dialSize (Kích thước mặt)
-// thickness (Độ dày)
-// Color (Màu mặt)
-// movementType (Loại máy)
-// strapSize (Kích cỡ dây)
-// waterResistance (Chống nước)
-// glassMaterial (Mặt kính)
-// strapMaterial (Chất liệu dây)
+
