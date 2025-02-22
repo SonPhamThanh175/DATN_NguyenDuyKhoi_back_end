@@ -9,6 +9,8 @@ import { join } from 'path';
 import { UploadModule } from './upload/upload.module';
 import { MenuModule } from './menu/menu.module';
 import { CategoryModule } from './category/category.module';
+import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 
 require('dotenv').config();
 
@@ -34,6 +36,8 @@ require('dotenv').config();
     CategoryModule,
     ProductModule,
     UploadModule,
+    CartModule,
+    OrderModule
   ],
 })
 export class AppModule {}
