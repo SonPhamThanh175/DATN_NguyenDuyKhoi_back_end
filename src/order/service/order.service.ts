@@ -31,32 +31,40 @@ export class OrderService {
     return orderUser;
   }
 
-  // async createOrder(createOrderDto: CreateOrderDto) {
-  //   let totalAmount = 0;
-  //   let productIds = [];
-  //   createOrderDto.products.forEach((product) => {
-  //     totalAmount += product.quantity * product.price;
-  //     productIds.push(product.productId);
-  //   });
-  //   const userIdObject = new Types.ObjectId(createOrderDto.userId);
-  //   const newOrder = { ...createOrderDto, userId: userIdObject, totalAmount };
-  //   try {
-  //     if (createOrderDto.isInCart) {
-  //       await this.cartService.deleteCartByProductIdsAndUserId(
-  //         createOrderDto.userId,
-  //         productIds,
-  //       );
-  //     }
+  async createOrder(createOrderDto: CreateOrderDto) {
+    let totalAmount = 0;
+    let productIds: ObjectId[] = [];
 
-  //     const orderExist = await this.orderRepository.create(newOrder);
-  //     return {
-  //       mesage: 'create order successfully',
-  //       orderExist,
-  //     };
-  //   } catch (err) {
-  //     throw new HttpException('Create order error', HttpStatus.BAD_REQUEST);
-  //   }
-  // }
+    createOrderDto.products.forEach((product) => {
+      totalAmount += product.quantity * product.price;
+      // productIds.push(product.productId);
+      productIds.push(new ObjectId(product.productId));
+
+
+    });
+    const userIdObject = new Types.ObjectId(createOrderDto.userId);
+    const newOrder = { ...createOrderDto, userId: userIdObject, totalAmount };
+    const productIdStrings: string[] = productIds.map(id => id.toString());
+    try {
+      if (createOrderDto.isInCart) {
+        // await this.cartService.deleteCartByProductIdsAndUserId(
+        //     createOrderDto.userId,
+        //     productIdStrings,
+        //     "",  
+        //     ""
+// );
+
+      }
+
+      const orderExist = await this.orderRepository.create(newOrder);
+      return {
+        mesage: 'create order successfully',
+        orderExist,
+      };
+    } catch (err) {
+      throw new HttpException('Create order error', HttpStatus.BAD_REQUEST);
+    }
+  }
 
   async getOrderById(orderId: string) {
     return this.orderRepository.findById(orderId);

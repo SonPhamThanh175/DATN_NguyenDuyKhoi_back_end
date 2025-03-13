@@ -5,4 +5,6 @@ export interface ProductOrder {
   urlImage: string;
   quantity: number;
   price: number;
+  size:string;
+  color: string;
 }

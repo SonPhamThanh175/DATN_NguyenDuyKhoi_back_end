@@ -42,37 +42,31 @@ export class CartRepository {
     ]);
   }
 
-  async getCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId) {
-    return await this.cartModel.findOne({ productId, userId });
+  async getCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId,size?: string, color?: string) {
+    return await this.cartModel.findOne({ productId, userId,size,color });
   }
 
-  async deleteCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId) {
-    return await this.cartModel.deleteOne({ productId, userId });
+  async deleteCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId,size: string, color: string) {
+    return await this.cartModel.deleteOne({ productId, userId ,size, color });
   }
 
   async deleteCartById(cartId: ObjectId) {
     return await this.cartModel.findByIdAndDelete(cartId);
   }
 
-  // async updateCartQuantity(
-  //   productId: ObjectId,
-  //   userId: ObjectId,
-  //   quantity: number,
-  // ) {
-  //   return this.cartModel
-  //     .findOneAndUpdate(
-  //       { productId, userId },
-  //       { $inc: { quantity } },
-  //       { new: true },
-  //     )
-  //     .exec();
-  // }
-  async updateCartQuantity(productId: ObjectId, userId: ObjectId, quantity: number, size?: string, color?: string) {
+  async updateCartQuantity(
+    productId: ObjectId,
+    userId: ObjectId,
+    quantity: number,
+    size?: string,
+    color?: string
+  ) {
     return await this.cartModel.findOneAndUpdate(
-      { productId, userId },
-      { $set: { quantity, size, color } }, // Đảm bảo cập nhật cả size và color
+      { productId, userId, size, color }, // Thêm size và color vào điều kiện tìm kiếm
+      { $inc: { quantity } }, // Sử dụng $inc để tăng quantity thay vì set cứng
       { new: true }
     );
   }
+  
   
 }

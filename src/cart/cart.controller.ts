@@ -27,10 +27,13 @@ export class CartController {
   }
 
   @Put('/user/:userId')
-  deleteProductsInCart(
-    @Param('userId') userId: string,
-    @Body('productIds') productIds: string[],
-  ) {
-    return this.cartService.deleteCartByProductIdsAndUserId(userId, productIds);
-  }
+deleteProductsInCart(
+  @Param('userId') userId: string,
+  @Body('productId') productId: string,
+  @Body('size') size: string,
+  @Body('color') color: string,
+) {
+  return this.cartService.deleteCartByProductIdsAndUserId(userId, productId, size, color);
+}
+
 }

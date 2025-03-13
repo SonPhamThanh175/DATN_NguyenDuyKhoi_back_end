@@ -25,10 +25,10 @@ export class OrderController {
     return this.orderService.getOrderUser(userId);
   }
 
-  // @Post('')
-  // CreateOrder(@Body() createOrderDto: CreateOrderDto) {
-  //   return this.orderService.createOrder(createOrderDto);
-  // }
+  @Post('')
+  CreateOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.createOrder(createOrderDto);
+  }
 
   @Put('/:orderId/status')
   updateStatus(

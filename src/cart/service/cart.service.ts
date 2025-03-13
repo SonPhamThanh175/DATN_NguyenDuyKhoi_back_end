@@ -57,6 +57,8 @@ export class CartService {
       const existingCart = await this.cartRepository.getCartByProductIdAndUserId(
         productIdObject,
         userIdObject,
+        createCartDto.size, 
+        createCartDto.color 
       );
   
       if (existingCart) {
@@ -100,10 +102,12 @@ export class CartService {
     return this.cartRepository.getByUserId(userIdObject);
   }
 
-  async getCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId) {
+  async getCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId, size: string, color: string) {
     return await this.cartRepository.getCartByProductIdAndUserId(
       productId,
       userId,
+      size,  
+      color
     );
   }
 
@@ -118,10 +122,12 @@ export class CartService {
     }
     return await this.cartRepository.deleteCartById(cartIdObjectId);
   }
-  async deleteCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId) {
+  async deleteCartByProductIdAndUserId(productId: ObjectId, userId: ObjectId, size: string, color: string) {
     const cartExists = await this.cartRepository.getCartByProductIdAndUserId(
       productId,
       userId,
+      size,
+      color,
     );
 
     if (!cartExists) {
@@ -131,32 +137,64 @@ export class CartService {
     return await this.cartRepository.deleteCartByProductIdAndUserId(
       productId,
       userId,
+      size,
+      color,
     );
   }
-  async deleteCartByProductIdsAndUserId(userId: string, productIds: string[]) {
+  // async deleteCartByProductIdsAndUserId(userId: string, productId: string[], size: string, color: string) {
+  //   const userIdObjectId = new ObjectId(userId);
+
+  //   const productIdsObjectId = productId.map(
+  //     (productId) => new ObjectId(productId),
+  //   );
+
+  //   try {
+  //     const deletePromises = productIdsObjectId.map(async (productId) => {
+  //       try {
+  //         await this.deleteCartByProductIdAndUserId(productId, userIdObjectId,size,color);
+  //       } catch (err) {
+  //         throw new Error(
+  //           `Error deleting cart for productId ${productId}: ${err.message}`,
+  //         );
+  //       }
+  //     });
+
+  //     await Promise.all(deletePromises);
+  //     return {
+  //       message: 'Delete carts successfully',
+  //     };
+  //   } catch (err) {
+  //     throw new HttpException('Delete carts error', HttpStatus.BAD_REQUEST);
+  //   }
+  // }
+  async deleteCartByProductIdsAndUserId(
+    userId: string,
+    productId: string,
+    size: string,
+    color: string
+  ) {
+    console.log('Received userId:', userId);
+    console.log('Received productId:', productId);
+  
+    if (!ObjectId.isValid(userId)) {
+      throw new Error(`Invalid userId: ${userId}`);
+    }
+  
+    if (!ObjectId.isValid(productId)) {
+      throw new Error(`Invalid productId: ${productId}`);
+    }
+  
     const userIdObjectId = new ObjectId(userId);
-
-    const productIdsObjectId = productIds.map(
-      (productId) => new ObjectId(productId),
-    );
-
+    const productIdObjectId = new ObjectId(productId);
+  
     try {
-      const deletePromises = productIdsObjectId.map(async (productId) => {
-        try {
-          await this.deleteCartByProductIdAndUserId(productId, userIdObjectId);
-        } catch (err) {
-          throw new Error(
-            `Error deleting cart for productId ${productId}: ${err.message}`,
-          );
-        }
-      });
-
-      await Promise.all(deletePromises);
-      return {
-        message: 'Delete carts successfully',
-      };
+      await this.cartRepository.deleteCartByProductIdAndUserId(
+        productIdObjectId, userIdObjectId, size, color
+      );
+      return { message: 'Deleted cart successfully' };
     } catch (err) {
-      throw new HttpException('Delete carts error', HttpStatus.BAD_REQUEST);
+      throw new HttpException(`Error deleting cart: ${err.message}`, HttpStatus.BAD_REQUEST);
     }
   }
+  
 }
