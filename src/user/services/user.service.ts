@@ -49,4 +49,16 @@ export class UserService {
       );
     }
   }
+  async getAllUsers() {
+    return this.userRepository.getAllUsers();
+  }
+  
+  async deleteUser(userId: string) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    await this.userRepository.deleteUser(userId);
+    return { message: 'User deleted successfully' };
+  }
 }

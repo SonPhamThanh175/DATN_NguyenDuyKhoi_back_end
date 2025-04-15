@@ -55,5 +55,12 @@ export class UserRepository {
   
     return updatedUser;
   }
+  async getAllUsers() {
+    return this.UserModel.find();
+  }
+  
+  async deleteUser(userId: string) {
+    return this.UserModel.findByIdAndDelete(userId);
+  }
   
 }
