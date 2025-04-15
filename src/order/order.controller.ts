@@ -49,4 +49,8 @@ export class OrderController {
   ) {
     return this.orderService.updateShippingStatus(orderId, shippingStatus);
   }
+  @Get('/statistics/revenue')
+getRevenueStatistics() {
+  return this.orderService.getRevenueStatistics();
+}
 }

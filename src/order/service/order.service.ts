@@ -170,4 +170,38 @@ export class OrderService {
     const orderExist = await this.orderRepository.findOrderSuccess(data);
     return orderExist;
   }
+  async getRevenueStatistics() {
+    const orders = await this.orderRepository.getAll();
+  
+    let totalRevenue = 0;
+    let successRevenue = 0;
+    let pendingRevenue = 0;
+  
+    let totalOrders = orders.length;
+    let successOrders = 0;
+    let pendingOrders = 0;
+  
+    for (const order of orders) {
+      const amount = order.totalAmount || 0;
+      totalRevenue += amount;
+  
+      if (order.status === 'success') {
+        successRevenue += amount;
+        successOrders += 1;
+      } else if (order.status === 'pending') {
+        pendingRevenue += amount;
+        pendingOrders += 1;
+      }
+    }
+  
+    return {
+      totalRevenue,
+      successRevenue,
+      pendingRevenue,
+      totalOrders,
+      successOrders,
+      pendingOrders,
+    };
+  }
+  
 }
