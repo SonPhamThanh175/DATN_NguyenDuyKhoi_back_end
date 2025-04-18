@@ -59,11 +59,21 @@ export class OrderRepository {
       { new: true },
     );
   }
+  // async updateShippingStatus(orderId: string, shippingStatus: string) {
+  //   return await this.orderModel.findByIdAndUpdate(
+  //     orderId,
+  //     { shippingStatus },
+  //     { new: true },
+  //   );
+  // }
   async updateShippingStatus(orderId: string, shippingStatus: string) {
-    return await this.orderModel.findByIdAndUpdate(
-      orderId,
-      { shippingStatus },
-      { new: true },
-    );
+    const updateData: any = { shippingStatus };
+  
+    if (shippingStatus === 'delivered') {
+      updateData.deliveryDate = new Date(); // ✅ Cập nhật ngày giao
+    }
+  
+    return this.orderModel.findByIdAndUpdate(orderId, updateData, { new: true });
   }
+  
 }

@@ -203,14 +203,16 @@ async createOrder(createOrderDto: CreateOrderDto) {
     if (!orderExist) {
       throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
     }
-
+  
     try {
       await this.orderRepository.updateShippingStatus(orderId, shippingStatus);
-      if (shippingStatus == 'đã giao hàng') {
-        await this.updateStatus(orderId);
+  
+      if (shippingStatus === 'delivered') {
+        await this.updateStatus(orderId); // nếu bạn có hàm xử lý thêm trạng thái khác
       }
+  
       return {
-        mesage: 'Update shipping status success',
+        message: 'Update shipping status success',
       };
     } catch (err) {
       throw new HttpException(
@@ -219,6 +221,7 @@ async createOrder(createOrderDto: CreateOrderDto) {
       );
     }
   }
+  
   async hasUserBoughtProduct(userId: ObjectId, productId: string) {
     const data = { userId, productId, status: 'success' };
     const orderExist = await this.orderRepository.findOrderSuccess(data);

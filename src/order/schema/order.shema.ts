@@ -39,8 +39,19 @@ export class Order {
   @Prop({ default: 'pending' })
   paymentStatus: string;
 
-  @Prop({ default: 'chờ xử lý' })
+  // @Prop({ default: 'chờ xử lý' })
+  // shippingStatus: string;
+  @Prop({ type: String, enum: ['pending', 'shipping', 'delivered', 'cancelled'], default: 'pending' })
   shippingStatus: string;
+
+  @Prop({ type: String }) // VD: Giao hàng nhanh, Shopee Express, v.v
+  shippingProvider: string;
+
+  @Prop({ type: Date }) // Ngày dự kiến giao
+  estimatedDelivery: Date;
+
+  @Prop({ type: Date }) // Ngày giao thành công
+  deliveryDate: Date;
 
   @Prop()
   paymentMethod: string;
