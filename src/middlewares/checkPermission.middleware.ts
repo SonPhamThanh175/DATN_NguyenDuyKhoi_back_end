@@ -82,7 +82,7 @@ export class CheckPermissionMiddleware implements NestMiddleware {
         });
       }
 
-      if (!['admin', 'saler'].includes(user.role)) {
+      if (!['admin', 'seller'].includes(user.role)) {
         return res.status(403).json({
           message: 'Bạn không có quyền thực hiện hành động này',
         });
