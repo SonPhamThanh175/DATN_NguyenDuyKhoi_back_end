@@ -16,10 +16,10 @@ import { ProductService } from 'src/product/service/product.service';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  // @Get('recommend/:productId')
-  // async getRecommendedProducts(@Param('productId') productId: string) {
-  //   return this.productService.getRecommendedProducts(productId);
-  // }
+  @Get('recommend/:productId')
+  async getRecommendedProducts(@Param('productId') productId: string) {
+    return this.productService.getRecommendedProducts(productId);
+  }
 
   @Post('')
   createProduct(@Body() createProductDto: CreateProductDto) {

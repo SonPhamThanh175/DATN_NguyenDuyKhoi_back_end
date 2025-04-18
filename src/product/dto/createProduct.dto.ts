@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, isString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, isString, Min } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -56,6 +56,10 @@ export class CreateProductDto {
   // @IsNotEmpty()
   // @IsString()
   // strapMaterial: string;
+
+  @IsNumber()
+  @Min(0)
+  quantity: number;
 
   @IsNotEmpty()
   @IsString()

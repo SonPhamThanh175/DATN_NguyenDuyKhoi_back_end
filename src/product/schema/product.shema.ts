@@ -46,6 +46,9 @@ export class Product extends Document {
   // @Prop()
   // strapMaterial: string;
 
+  @Prop({ required: true, default: 1000 })
+  quantity: number;
+
   @Prop({ type: Types.ObjectId })
   typeId: Types.ObjectId;
 }

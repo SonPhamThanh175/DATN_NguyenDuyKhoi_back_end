@@ -15,6 +15,7 @@ import { CartModule } from 'src/cart/cart.module';
 import { PaymentModule } from 'src/payment/payment.module';
 import { VerifyTokenMiddleware } from 'src/middlewares/logging.middleware';
 import { UserModule } from 'src/user/user.module';
+import { ProductModule } from 'src/product/product.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from 'src/user/user.module';
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
     CartModule,
     UserModule,
+    ProductModule,
   ],
   controllers: [OrderController],
   providers: [OrderService, OrderRepository, CartService],

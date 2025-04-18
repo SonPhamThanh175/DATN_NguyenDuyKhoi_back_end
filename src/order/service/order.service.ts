@@ -5,13 +5,14 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { OrderRepository } from '../repository/order.repository';
 import { ObjectId } from 'mongodb';
 import { CreateOrderDto } from '../dto/CreateOrder.dto';
 import { CartService } from './../../cart/service/cart.service';
 import { PaymentService } from './../../payment/payment.service';
-
+import { InjectModel } from '@nestjs/mongoose';
+import { Product } from 'src/product/schema/product.shema';
 @Injectable()
 export class OrderService {
   constructor(
@@ -19,6 +20,7 @@ export class OrderService {
     private readonly paymentService: PaymentService,
     private orderRepository: OrderRepository,
     private cartService: CartService,
+    @InjectModel(Product.name) private readonly productModel: Model<Product>,
   ) {}
 
   async getAllOrders() {
@@ -31,40 +33,92 @@ export class OrderService {
     return orderUser;
   }
 
-  async createOrder(createOrderDto: CreateOrderDto) {
-    let totalAmount = 0;
-    let productIds: ObjectId[] = [];
+//   async createOrder(createOrderDto: CreateOrderDto) {
+//     let totalAmount = 0;
+//     let productIds: ObjectId[] = [];
 
-    createOrderDto.products.forEach((product) => {
-      totalAmount += product.quantity * product.price;
-      // productIds.push(product.productId);
-      productIds.push(new ObjectId(product.productId));
+//     createOrderDto.products.forEach((product) => {
+//       totalAmount += product.quantity * product.price;
+//       // productIds.push(product.productId);
+//       productIds.push(new ObjectId(product.productId));
 
 
-    });
-    const userIdObject = new Types.ObjectId(createOrderDto.userId);
-    const newOrder = { ...createOrderDto, userId: userIdObject, totalAmount };
-    const productIdStrings: string[] = productIds.map(id => id.toString());
-    try {
-      if (createOrderDto.isInCart) {
-        // await this.cartService.deleteCartByProductIdsAndUserId(
-        //     createOrderDto.userId,
-        //     productIdStrings,
-        //     "",  
-        //     ""
-// );
+//     });
+//     const userIdObject = new Types.ObjectId(createOrderDto.userId);
+//     const newOrder = { ...createOrderDto, userId: userIdObject, totalAmount };
+//     const productIdStrings: string[] = productIds.map(id => id.toString());
+//     try {
+//       if (createOrderDto.isInCart) {
+//         // await this.cartService.deleteCartByProductIdsAndUserId(
+//         //     createOrderDto.userId,
+//         //     productIdStrings,
+//         //     "",  
+//         //     ""
+// // );
 
-      }
+//       }
 
-      const orderExist = await this.orderRepository.create(newOrder);
-      return {
-        mesage: 'create order successfully',
-        orderExist,
-      };
-    } catch (err) {
-      throw new HttpException('Create order error', HttpStatus.BAD_REQUEST);
+//       const orderExist = await this.orderRepository.create(newOrder);
+//       return {
+//         mesage: 'create order successfully',
+//         orderExist,
+//       };
+//     } catch (err) {
+//       throw new HttpException('Create order error', HttpStatus.BAD_REQUEST);
+//     }
+//   }
+async createOrder(createOrderDto: CreateOrderDto) {
+  let totalAmount = 0;
+  let productIds: ObjectId[] = [];
+
+  // Bước 1: Kiểm tra tồn kho trước khi tạo đơn
+  for (const product of createOrderDto.products) {
+    const productDoc = await this.productModel.findById(product.productId);
+
+    if (!productDoc) {
+      throw new HttpException(`Sản phẩm ${product.productId} không tồn tại`, HttpStatus.NOT_FOUND);
     }
+
+    if (product.quantity > productDoc.quantity) {
+      throw new HttpException(
+        `Sản phẩm "${productDoc.name}" chỉ còn ${productDoc.quantity} cái trong kho`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    totalAmount += product.quantity * product.price;
+    productIds.push(new ObjectId(product.productId));
   }
+
+  // Bước 2: Tạo đơn hàng
+  const userIdObject = new Types.ObjectId(createOrderDto.userId);
+  const newOrder = { ...createOrderDto, userId: userIdObject, totalAmount };
+  const productIdStrings: string[] = productIds.map(id => id.toString());
+
+  try {
+    if (createOrderDto.isInCart) {
+      // gọi hàm xoá cart nếu có
+    }
+
+    // Bước 3: Trừ tồn kho sau khi tạo đơn
+    for (const product of createOrderDto.products) {
+      await this.productModel.findByIdAndUpdate(
+        product.productId,
+        { $inc: { quantity: -product.quantity } },
+      );
+    }
+
+    const orderExist = await this.orderRepository.create(newOrder);
+
+    return {
+      message: 'Tạo đơn hàng thành công',
+      orderExist,
+    };
+  } catch (err) {
+    throw new HttpException('Lỗi khi tạo đơn hàng', HttpStatus.BAD_REQUEST);
+  }
+}
+
 
   async getOrderById(orderId: string) {
     return this.orderRepository.findById(orderId);

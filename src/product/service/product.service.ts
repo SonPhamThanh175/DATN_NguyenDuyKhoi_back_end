@@ -4,11 +4,11 @@ import { Types } from 'mongoose';
 import { TypeService } from 'src/type/service/type.service';
 import { Product } from '../schema/product.shema';
 import { CreateProductDto } from '../dto/createProduct.dto';
-// import * as natural from 'natural';
+import * as natural from 'natural';
 @Injectable()
 export class ProductService {
-  // private tokenizer = new natural.WordTokenizer();
-  // private tfidf = new natural.TfIdf();
+  private tokenizer = new natural.WordTokenizer();
+  private tfidf = new natural.TfIdf();
   private readonly _limit = 16;
   constructor(
     private productRepository: ProductRepository,
@@ -17,73 +17,73 @@ export class ProductService {
 
   // ============================================================================================================================
 
-  // async getRecommendedProducts(productId: string): Promise<Product[]> {
-  //   // Lấy sản phẩm hiện tại
-  //   const currentProduct = await this.productRepository.findById(productId);
-  //   if (!currentProduct) {
-  //     throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-  //   }
+  async getRecommendedProducts(productId: string): Promise<Product[]> {
+    // Lấy sản phẩm hiện tại
+    const currentProduct = await this.productRepository.findById(productId);
+    if (!currentProduct) {
+      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+    }
   
-  //   // Lấy tất cả sản phẩm
-  //   const allProducts = await this.productRepository.getAll();
+    // Lấy tất cả sản phẩm
+    const allProducts = await this.productRepository.getAll();
   
-  //   // Tạo danh sách văn bản từ các thuộc tính sản phẩm
-  //   const documents = allProducts.map(product =>
-  //     this.combineProductAttributes(product)
-  //   );
+    // Tạo danh sách văn bản từ các thuộc tính sản phẩm
+    const documents = allProducts.map(product =>
+      this.combineProductAttributes(product)
+    );
   
-  //   // Thêm mô tả của sản phẩm hiện tại vào danh sách tài liệu
-  //   this.tfidf.addDocument(this.combineProductAttributes(currentProduct));
-  //   documents.forEach(doc => this.tfidf.addDocument(doc));
+    // Thêm mô tả của sản phẩm hiện tại vào danh sách tài liệu
+    this.tfidf.addDocument(this.combineProductAttributes(currentProduct));
+    documents.forEach(doc => this.tfidf.addDocument(doc));
   
-  //   // Tính toán độ tương tự cho tất cả các sản phẩm
-  //   const recommendedProducts = allProducts
-  //     .filter(product => product._id.toString() !== productId)
-  //     .map(product => ({
-  //       product,
-  //       similarity: this.calculateSimilarity(currentProduct, product),
-  //     }))
-  //     .sort((a, b) => b.similarity - a.similarity)
-  //     .map(item => item.product);
+    // Tính toán độ tương tự cho tất cả các sản phẩm
+    const recommendedProducts = allProducts
+      .filter(product => product?.id.toString() !== productId)
+      .map(product => ({
+        product,
+        similarity: this.calculateSimilarity(currentProduct, product),
+      }))
+      .sort((a, b) => b.similarity - a.similarity)
+      .map(item => item.product);
   
-  //   return recommendedProducts.slice(0, 10); 
-  // }
+    return recommendedProducts.slice(0, 10); 
+  }
   
-  // private combineProductAttributes(product: Product): string {
-  //   // Kết hợp các thuộc tính của sản phẩm thành một chuỗi văn bản
-  //   return `${product.description} ${product.dialSize} ${product.Color} ${product.movementType} ${product.strapMaterial} ${product.glassMaterial}`;
-  // }
+  private combineProductAttributes(product: Product): string {
+    // Kết hợp các thuộc tính của sản phẩm thành một chuỗi văn bản
+    return `${product.description} ${product.size} ${product.Color} `;
+  }
   
-  // private calculateSimilarity(product1: Product, product2: Product): number {
-  //   const tfidf1 = new natural.TfIdf();
-  //   const tfidf2 = new natural.TfIdf();
+  private calculateSimilarity(product1: Product, product2: Product): number {
+    const tfidf1 = new natural.TfIdf();
+    const tfidf2 = new natural.TfIdf();
   
-  //   const doc1 = this.combineProductAttributes(product1);
-  //   const doc2 = this.combineProductAttributes(product2);
+    const doc1 = this.combineProductAttributes(product1);
+    const doc2 = this.combineProductAttributes(product2);
   
-  //   tfidf1.addDocument(doc1);
-  //   tfidf2.addDocument(doc2);
+    tfidf1.addDocument(doc1);
+    tfidf2.addDocument(doc2);
   
-  //   const terms1 = tfidf1.listTerms(0);
-  //   const terms2 = tfidf2.listTerms(0);
+    const terms1 = tfidf1.listTerms(0);
+    const terms2 = tfidf2.listTerms(0);
   
-  //   // Tính tích vô hướng
-  //   let dotProduct = 0;
-  //   terms1.forEach(term1 => {
-  //     const term1TFIDF = term1.tfidf;
-  //     const term2 = terms2.find(t => t.term === term1.term);
-  //     if (term2) {
-  //       dotProduct += term1TFIDF * term2.tfidf;
-  //     }
-  //   });
+    // Tính tích vô hướng
+    let dotProduct = 0;
+    terms1.forEach(term1 => {
+      const term1TFIDF = term1.tfidf;
+      const term2 = terms2.find(t => t.term === term1.term);
+      if (term2) {
+        dotProduct += term1TFIDF * term2.tfidf;
+      }
+    });
   
-  //   // Tính độ dài (norm) của vector
-  //   const norm1 = Math.sqrt(terms1.reduce((sum, term) => sum + Math.pow(term.tfidf, 2), 0));
-  //   const norm2 = Math.sqrt(terms2.reduce((sum, term) => sum + Math.pow(term.tfidf, 2), 0));
+    // Tính độ dài (norm) của vector
+    const norm1 = Math.sqrt(terms1.reduce((sum, term) => sum + Math.pow(term.tfidf, 2), 0));
+    const norm2 = Math.sqrt(terms2.reduce((sum, term) => sum + Math.pow(term.tfidf, 2), 0));
   
-  //   // Tính cosine similarity
-  //   return dotProduct / (norm1 * norm2);
-  // }
+    // Tính cosine similarity
+    return dotProduct / (norm1 * norm2);
+  }
   // ============================================================================================================================
   async getAllProducts() {
     return await this.productRepository.getAll();
