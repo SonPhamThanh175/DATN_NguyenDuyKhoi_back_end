@@ -31,7 +31,7 @@ export class Product extends Document {
   @Prop()
   Color: string;
 
-  @Prop({ default: [''] })
+  @Prop({ default: ['36','37','38','39','40','41','42']})
   size: string[];
 
   // @Prop()

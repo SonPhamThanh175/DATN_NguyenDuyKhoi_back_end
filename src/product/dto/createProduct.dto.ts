@@ -21,41 +21,10 @@ export class CreateProductDto {
   @IsNumber()
   salePrice: number;
 
-  // @IsNotEmpty()
-  // @IsNumber()
-  // dialSize: number;
-
-  // @IsNotEmpty()
-  // @IsNumber()
-  // thickness: number;
-
   @IsNotEmpty()
   @IsString()
   Color: string;
 
-  // @IsNotEmpty()
-  // @IsString()
-  // size: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // movementType: string;
-
-  // @IsNotEmpty()
-  // @IsNumber()
-  // strapSize: number;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // waterResistance: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // glassMaterial: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // strapMaterial: string;
 
   @IsNumber()
   @Min(0)
