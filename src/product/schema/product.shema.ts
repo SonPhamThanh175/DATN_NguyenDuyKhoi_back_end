@@ -28,8 +28,8 @@ export class Product extends Document {
   // @Prop()
   // thickness: number;
 
-  @Prop()
-  Color: string;
+  @Prop({ default: [''] })
+  Color: string[];
 
   @Prop({ default: ['36','37','38','39','40','41','42']})
   size: string[];

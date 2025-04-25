@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsNumber, IsString, isString, Min } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  isString,
+  Min,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -22,9 +30,10 @@ export class CreateProductDto {
   salePrice: number;
 
   @IsNotEmpty()
-  @IsString()
-  Color: string;
-
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  Color: string[];
 
   @IsNumber()
   @Min(0)
@@ -34,5 +43,3 @@ export class CreateProductDto {
   @IsString()
   typeId: string;
 }
-
-
