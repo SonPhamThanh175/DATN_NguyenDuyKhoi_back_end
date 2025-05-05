@@ -42,4 +42,8 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   typeId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  categoryId: string;
 }

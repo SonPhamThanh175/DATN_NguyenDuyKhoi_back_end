@@ -149,7 +149,7 @@ export class ProductService {
       return (
         !filter.categoryId ||
         (product.categoryId &&
-          product.categoryId.toString() === filter.categoryId) ||
+          product.categoryId.toString() === filter.categoryId) &&
         !filter.typeId ||
         (product.typeId && product.typeId.toString() === filter.typeId)
       );
