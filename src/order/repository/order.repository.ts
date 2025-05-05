@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Order } from '../schema/order.shema';
 import { ShippingInfo } from './../schema/order.shema';
@@ -22,13 +22,23 @@ export class OrderRepository {
     return this.orderModel.create(newOrder);
   }
 
+  // async findOrderSuccess(data: any) {
+  //   console.log('data in repo:', data);
+  //   return await this.orderModel.find({
+  //     userId: data.userId,
+  //     status: 'success',
+  //     products: {
+  //       $elemMatch: { productId: data.productId },
+  //     },
+  //   });
+  // }
   async findOrderSuccess(data: any) {
     console.log('data in repo:', data);
     return await this.orderModel.find({
-      userId: data.userId,
+      userId: new Types.ObjectId(data.userId),
       status: 'success',
       products: {
-        $elemMatch: { productId: data.productId },
+        $elemMatch: { productId: new Types.ObjectId(data.productId) },
       },
     });
   }

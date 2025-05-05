@@ -13,6 +13,14 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
+  address?: string;
+  
+  @IsOptional()
+  @IsString()
+  addressDetail?: string;
+
+  @IsOptional()
+  @IsString()
   facebookId?: string;
 
   @IsOptional()
