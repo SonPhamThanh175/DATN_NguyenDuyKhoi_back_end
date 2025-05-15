@@ -22,26 +22,26 @@ export class OrderRepository {
     return this.orderModel.create(newOrder);
   }
 
-  // async findOrderSuccess(data: any) {
-  //   console.log('data in repo:', data);
-  //   return await this.orderModel.find({
-  //     userId: data.userId,
-  //     status: 'success',
-  //     products: {
-  //       $elemMatch: { productId: data.productId },
-  //     },
-  //   });
-  // }
   async findOrderSuccess(data: any) {
     console.log('data in repo:', data);
     return await this.orderModel.find({
-      userId: new Types.ObjectId(data.userId),
+      userId: data.userId,
       status: 'success',
       products: {
-        $elemMatch: { productId: new Types.ObjectId(data.productId) },
+        $elemMatch: { productId: data.productId },
       },
     });
   }
+  // async findOrderSuccess(data: any) {
+  //   console.log('data in repo:', data);
+  //   return await this.orderModel.find({
+  //     userId: new Types.ObjectId(data.userId),
+  //     status: 'success',
+  //     products: {
+  //       $elemMatch: { productId: new Types.ObjectId(data.productId) },
+  //     },
+  //   });
+  // }
 
   async findById(id: string) {
     return await this.orderModel.findById(id);

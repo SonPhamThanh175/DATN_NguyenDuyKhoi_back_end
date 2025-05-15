@@ -16,3 +16,5 @@ export class Review {
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);
+
+export type ReviewDocument = Review & Document;

@@ -11,6 +11,8 @@ import { MenuModule } from './menu/menu.module';
 import { CategoryModule } from './category/category.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { RecommendationModule } from './recommendation/recommendation.module';
+import { ReviewModule } from './review/review.module';
 
 require('dotenv').config();
 
@@ -37,7 +39,9 @@ require('dotenv').config();
     ProductModule,
     UploadModule,
     CartModule,
-    OrderModule
+    OrderModule,
+    RecommendationModule,
+    ReviewModule
   ],
 })
 export class AppModule {}

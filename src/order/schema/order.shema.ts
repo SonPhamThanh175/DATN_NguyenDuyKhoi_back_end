@@ -61,3 +61,5 @@ export class Order {
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
+
+export type OrderDocument = Order & Document;

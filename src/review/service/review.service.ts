@@ -15,7 +15,7 @@ export class ReviewService {
 
     const orderExists = await this.orderService.hasUserBoughtProduct(
       userIdObjectId,
-      createReviewDto.productId,
+      productIdObjectId.toHexString()
     );
     console.log('orderExists :', orderExists);
 
